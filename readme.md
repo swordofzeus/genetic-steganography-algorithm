@@ -30,13 +30,13 @@ crossover -
 mutation - which introduces random modifications. Probably the easiest of the three, just select random indexes to throw information into.
  
 
-Our Algorithm will look something like this:
-1. init population
-2. determine initial fitness
-loop:
-3. select population()
-4. crossover()
-5. mutate()
-6. determine fitness()
-7. break: when the population stops changing or set # iterations
+Our Algorithm will look something like this:	<br />
+1. init population <br />
+2. determine initial fitness	<br />
+loop:	<br />
+3. select population()	<br />
+4. crossover()	<br />
+5. mutate()	<br />
+6. determine fitness()	<br />
+7. break: when the population stops changing or set # iterations	<br />
 
