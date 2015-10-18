@@ -31,12 +31,12 @@ mutation - which introduces random modifications. Probably the easiest of the th
  
 
 Our Algorithm will look something like this:
-	1. init population
-	2. determine initial fitness
-	loop:
-		3. select population()
-		4. crossover()
-		5. mutate()
-		6. determine fitness()
-	7. break when the population stops changing or set # iterations
+1. init population
+2. determine initial fitness
+loop:
+3. select population()
+4. crossover()
+5. mutate()
+6. determine fitness()
+7. break: when the population stops changing or set # iterations
 
