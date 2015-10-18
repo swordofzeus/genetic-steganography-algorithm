@@ -21,7 +21,7 @@ Essentially we will need 3 functions:
 selection - 
 	which equates to survival of the fittest. The first part, computing the fitness function to judge each individual in the population has already been complete. 
 	The next and more challenging part is figuring out how to use this to select a population. Simply selecting the best individuals wont work.
-	Here are some possible technqiues: 
+	Here are some possible technqiues: http://www.obitko.com/tutorials/genetic-algorithms/selection.php
 
 crossover - 
 	which represents mating between individuals. We could for example, have two arrays  trade indexes that hide information. The ones that figured out the best way to hide information will keep trading with each
