@@ -4,36 +4,72 @@ import audioop
 import numpy as np
 import random as random
 import struct
+import json
 def main():
-	fname = get_file_from_user()
+	fname = get_from_user("enter a filename: ")
 	af = open_audio_file(fname)				# returns a byte string of the audio file
+	message = get_from_user("message: ")
+	print "original message: " + message
+	message_hex = binascii.hexlify(message)
+	print "message as hex: " + message_hex
+	decoded = message_hex.decode("hex")
+	print decoded
 	parameters = get_audio_information(af)	# displays audio information
 	audio = load_into_memory(af)			# copies the byte string into hex format
 	baseline_rms = compute_rms_power(audio,"rms power before added noise : ")	# computes the rms power to the unedited file
-	print "adding noise to file : " + fname
-	edited_audio = add_random_noise(audio)	# inserts random hex values between 0 < x < 4							
+	print "adding message to file : " + fname
+	edited_info = add_random_noise(audio,message_hex)	# inserts random hex values between 0 < x < 4							
+	edited_audio = edited_info[0]
+	key = edited_info[1]
 	edited_rms = compute_rms_power(edited_audio,"rms power after adding noise")		# computes the rms power of the edited file
 	noise_fname = get_noise_fname(fname)											
 	write_wave_file(noise_fname,edited_audio,parameters)	# writes a copy of the edited file to disk
 	snr = compute_fitness_function(baseline_rms,edited_rms)	# computes the signal to noise ratio, measuring the ratio of important information to junk/noise
 	print ("the signal to noise ratio is: " , snr)
 	print "the noise file has been saved as " + noise_fname 
-def get_file_from_user():
-	filename = raw_input('Enter a file name: ')
+	saved_keyname = get_from_user("audio hidden in " + fname  + "\nenter name for your stego key:")
+	save_key(key,saved_keyname)
+	keyname = get_from_user("enter a .key to decode the text from the audio file: ")
+	key = load_key(keyname)
+	decode_message(edited_audio,key)
+def decode_message(audio,key):
+	hex_msg = ""
+	for x in range (0, len(key)):
+		hex_msg = hex_msg + audio[int(key[x])]
+	print hex_msg
+	decoded_msg = hex_msg.decode("hex")
+	#[::-1]
+	print decoded_msg
+	exit()	
+def save_key(key,fname):
+	with open(fname + ".key", 'w') as f:
+  		json.dump(key, f, ensure_ascii=False)
+  		print "\nthe file " + fname + ".key" + " has been saved.\n"
+  		print "this file will help you recover your text" 
+
+def load_key(fname):
+	with open(fname,'r') as f:
+		x = json.load(f)
+		return x
+def get_from_user(message):
+	filename = raw_input(message)
 	return filename
 def get_noise_fname(fname):
 	token = fname.split('.')
 	noise_fname = token[0] + "_edited.wav"
 	return noise_fname
-def add_random_noise(audio_hex):
+def add_random_noise(audio_hex,message):
 	audio_list = list(audio_hex)
-	for x in range (0,999900): 
-		randinteger = random.randint(0, 4)
-		string = str(randinteger)
-		randhex = binascii.hexlify(string)
+	hidden_key = list()
+	#400000
+	for x in range (0,len(message)): 
+		#string = str(message[x-400000])
+		randhex = message[x]
+		hidden_key.append(x) 
+		print randhex + " original : " + audio_list[x]
 		audio_list[x] = randhex
 	edited_audio =  ''.join(audio_list)
-	return edited_audio
+	return edited_audio,hidden_key
 def write_wave_file(fname,hexdata,parameters):
 	noise_output = wave.open(fname,'w')
 	num_channels = parameters[0]
@@ -46,8 +82,6 @@ def write_wave_file(fname,hexdata,parameters):
 	audio_bytes = bytearray.fromhex(hexdata)
 	noise_output.writeframes(audio_bytes)
 	noise_output.close()		
-def load_segment(af,epoch,frame_ration): 
-	num_frames = af.getnframes()
 def open_audio_file(fname):
         audio_file = wave.open(fname,'rb')
         print("audio file opened....OK.\n")
@@ -76,5 +110,5 @@ def compute_rms_power(audio,message):
 def compute_fitness_function(baseline_stream,noisy_stream):
 	return float(baseline_stream)/float(noisy_stream)
 
-main()
 
+main()

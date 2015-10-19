@@ -1,15 +1,38 @@
-Currently our project adds random noise to a wav file and computes the SNR (Signal to Noise ratio).
+Currently our project adds a secret message to the begining of the audio file and creates a (.key) file for recovery. It computes the SNR (Signal to Noise ratio) of the edited file 
+and the one with the message. The audio file has tens of thousnads of bytes so if your message is small, it will most likely be 1.
+
 Usage : 		
-	Enter a file name: ocarina.wav			// you can enter any wav file, i provided a sample one i was using to test.
+	enter a filename: ocarina.wav
 	audio file opened....OK.
 
-	< some info about audio,channels, samplewidth, etc. >	
+	message: secr3tpassw0rd
+	original message: secr3tpassw0rd
+	message as hex: 7365637233747061737377307264
+	<audio info>
+	number of channels :  2
+	sampwidth :  2
+	framerate  44100
+	number of frames  464896
+	compression type NONE
+	compression name  not compressed
+	reading information....OK.
 
 	('rms power before added noise : ', 4820)
-	adding noise to file : ocarina.wav
-	('rms power after adding noise', 9147)
-	('the signal to noise ratio is: ', 0.5269487263583689)
+	adding message to file : ocarina.wav
+	('rms power after adding noise', 4821)
+	('the signal to noise ratio is: ', 0.9997925741547397)
 	the noise file has been saved as ocarina_edited.wav
+	audio hidden in ocarina.wav
+	enter name for your stego key:mykey
+	the file mykey.key has been saved.
+	this file will help you recover your text
+
+	enter a .key to decode the text from the audio file: mykey.key
+	7365637233747061737377307264
+	secr3tpassw0rd
+
+	
+
 
 I did this in order to verify that I was correctly calculating the SNR since you need two values (baseline audio) and (noisy audio).
 This is a ratio between how strong our actual meaningful information is to the noise that is produced by our editing. Our goal, of course is to minimze
