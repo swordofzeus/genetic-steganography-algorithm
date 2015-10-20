@@ -17,7 +17,10 @@ def main():
 	audio = steg.as_hex(af)
 	baseline_rms = steg.compute_rms_power(audio,"rms power before added noise : ")
 	
-	edited_info = steg.encode(audio,message_hex)	# inserts random hex values between 0 < x < 4							
+	population = steg.init_population(audio,3,message_hex)
+
+	
+	edited_info = steg.encode(audio,message_hex,population[0])	# inserts random hex values between 0 < x < 4							
 	edited_audio = edited_info[0]
 	key = edited_info[1]
 	edited_rms = steg.compute_rms_power(edited_audio,"rms power after adding noise")		# computes the rms power of the edited file

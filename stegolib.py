@@ -43,17 +43,17 @@ class stegolib:
 		return noise_fname
 
 	#encodes the message into the audio file
-	def encode(self,audio_hex,message):
+	def encode(self,audio_hex,message,population):
 		audio_list = list(audio_hex)
 		hidden_key = list()
 		#400000
 		offset = 0
-		for x in range (0 + offset,offset + len(message)): 
+		for x in range (0 + offset,offset + len(population)): 
 			#string = str(message[x-400000])
 			randhex = message[x-offset]
-			hidden_key.append(x) 
+			hidden_key.append(population[x]) 
 			#print randhex + " original : " + audio_list[x]
-			audio_list[x] = randhex
+			audio_list[population[x]] = randhex
 		edited_audio =  ''.join(audio_list)
 		return edited_audio,hidden_key
 	
@@ -110,3 +110,29 @@ class stegolib:
 	#population fitness
 	def compute_fitness_function(self,baseline_stream,noisy_stream):
 		return float(baseline_stream)/float(noisy_stream)
+
+	def new_chromosome(self,message,audio):
+		chromosome = list()
+		for x in range(0,len(message)):
+			random_index = random.randint(0,len(audio))
+			if random_index in chromosome:
+				random_index = random.randint(0,len(audio))
+			chromosome.append(random_index)
+		#	print "random index " + str(random_index)
+
+		#print "\n"
+		#print chromosome
+		return chromosome
+
+	def init_population(self,audio,pop_size,message):
+		pop_list = list()
+		for x in range(0,pop_size):
+			print "iteration : " + str(x)
+			chromosome = self.new_chromosome(message,audio)
+			pop_list.append(chromosome)
+		
+		for x in range (0,pop_size):
+			print pop_list[x]
+		return pop_list
+
+	
