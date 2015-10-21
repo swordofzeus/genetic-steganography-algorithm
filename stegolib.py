@@ -9,6 +9,7 @@ import numpy as np
 import random as random
 import struct
 import json
+from Chromosome import Chromosome as Chromosome
 class stegolib:
 
 	#takes a string of hex values and the corresponding key 
@@ -103,7 +104,7 @@ class stegolib:
 		audio_byte_arr = bytearray.fromhex(audio)
 		ad = ''.join(str(audio_byte_arr))
 		rms = audioop.rms(ad,2)	
-		print(message , rms)
+		#print(message , rms)
 		return rms
 
 	#returns the signal to noise ratio, used to determine 
@@ -112,12 +113,14 @@ class stegolib:
 		return float(baseline_stream)/float(noisy_stream)
 
 	def new_chromosome(self,message,audio):
-		chromosome = list()
+		key = list()
 		for x in range(0,len(message)):
 			random_index = random.randint(0,len(audio))
-			if random_index in chromosome:
+			while random_index in key:
+				print "found duplicte. creating new random indx"
 				random_index = random.randint(0,len(audio))
-			chromosome.append(random_index)
+			key.append(random_index)
+		chromosome = Chromosome(key,-1)
 		#	print "random index " + str(random_index)
 
 		#print "\n"
@@ -127,12 +130,20 @@ class stegolib:
 	def init_population(self,audio,pop_size,message):
 		pop_list = list()
 		for x in range(0,pop_size):
-			print "iteration : " + str(x)
+			print "new chromosome created! : " + str(x)
 			chromosome = self.new_chromosome(message,audio)
 			pop_list.append(chromosome)
-		
-		for x in range (0,pop_size):
-			print pop_list[x]
 		return pop_list
 
-	
+	def measure_population(self,audio,message,population,baseline_rms):
+		fitness = list()
+		for x in range(0,len(population)):
+			curr_chromosome = population[x]
+			audio_info = self.encode(audio,message,curr_chromosome.all_genes())
+			audio_edited = audio_info[0]
+			audio_key = audio_info[1]
+			edited_rms = self.compute_rms_power(audio_edited," ")
+			curr_fitness = self.compute_fitness_function(baseline_rms,edited_rms)
+			curr_chromosome.fitness = curr_fitness
+			fitness.append(curr_fitness)
+		return fitness

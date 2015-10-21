@@ -11,16 +11,25 @@ def main():
 	steg = stegolib()
 	af = steg.open_audio_file(fname)
 	parameters = steg.get_audio_information(af)
-	message = get_from_user("enter a message: ")
+	message = "#The GA maintains a population of n chromosomes (solutions) with associated fitness values. Parents are selected to mate, on the basis of their fitness, producing offspring via a reproductive plan. Consequently highly fit solutions are given more opportunities to A population of individualsare is maintained within search space for a GA, each representing a possible solution to a given problem. Each individual is coded as a finite length vector of components, or variables, in terms of some alphabet, usually the binary "
+	message = message + message
 	message_hex = binascii.hexlify(message)
-
+	#The GA maintains a population of n chromosomes (solutions) with associated fitness values. Parents are selected to mate, on the basis of their fitness, producing offspring via a reproductive plan. Consequently highly fit solutions are given more opportunities to 
 	audio = steg.as_hex(af)
 	baseline_rms = steg.compute_rms_power(audio,"rms power before added noise : ")
 	
-	population = steg.init_population(audio,3,message_hex)
-
+	population = steg.init_population(audio,20,message_hex)
+	population_fitness = steg.measure_population(audio,message_hex,population,baseline_rms)
+	print_pop_fitness(population)
 	
-	edited_info = steg.encode(audio,message_hex,population[0])	# inserts random hex values between 0 < x < 4							
+
+	exit()
+	#print population_fitness
+	
+	
+
+
+	edited_info = steg.encode(audio,message_hex,population[0].key)	# inserts random hex values between 0 < x < 4							
 	edited_audio = edited_info[0]
 	key = edited_info[1]
 	edited_rms = steg.compute_rms_power(edited_audio,"rms power after adding noise")		# computes the rms power of the edited file
@@ -41,4 +50,15 @@ def main():
 def get_from_user(message):
 		filename = raw_input(message)
 		return filename
+
+def print_pop_fitness(population):
+	lowest = 0
+	lowest_value = population[0].fitness
+	for x in range(0,len(population)):
+		if(population[x].fitness < lowest_value):
+			lowest = x
+			lowest_value = population[lowest].fitness
+		print "individial " + str(x) + ":\t" + str(population[x].fitness)
+	print "best individual: \t" + str(lowest) + ": " + str(lowest_value)
+
 main()
