@@ -4,8 +4,17 @@ class Chromosome:
 		self.key = key
 		self.fitness = fitness
 
-	def mutate():
-			pass
+	def mutate(self,amount):
+		for x in range(0,amount):
+				
+				mutate_value = random.randint(0,len(self.key)-1)
+				print "before : "  + str(self.key[mutate_value])
+				if mutate_value in self.key:
+					continue
+				else:
+					self.key[mutate_value] = self.key[mutate_value]/2
+				print "after : " + str(self.key[mutate_value])
+			
 
 	def get_gene(self,i):
 		return self.key[i]

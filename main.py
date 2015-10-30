@@ -8,8 +8,20 @@ import struct
 import json
 from stegolib import stegolib
 from RouletteWheel import RouletteWheel
+from RankSelection import RankSelection
 from Chromosome import Chromosome as Chromosome
+
+SELECTION_ROULETTE = "roulette"
+SELECTION_RANK = "rank"
+SELECTIVE_PRESSURE = 2.0
+MUTATION_FREQ = 0
+ELITISM = 0
 def main():
+	
+
+	selection = "rank"
+
+
 	fname = "ocarina.wav"
 	print "The file to encode is : \t" + fname 
 	#get_from_user("enter a filename: ")
@@ -37,20 +49,31 @@ def main():
 	print_pop_fitness(population,best_values,"individual")
 	get_from_user("\npress enter to continue")
 	
-	rw = RouletteWheel(population)
-	rw.create_wheel(population)
+
+	###################################
+	
+	#get_parents()
+	#survive = parents[0]
+	#survive2 = parents[1]
+	#print "parent one fitness: " + str(survive.fitness)
+	#print "parent two fitness: " + str(survive2.fitness)	
+	#exit()
+	###################################
+	
+	##################################
+
 	next_generation = list()
 	print "Step 2 : Initialize new generation"
 	print "The most fit individuals are selected using the RouletteWheel model to produce children. The fittest individuals cross genes in hopes that after multiple iterations future generations will \nbegin to converge towards an optimal or near optimal value."
 	get_from_user("\n press enter to continue")
 	
-	num_generations = 5
-	for y in range(0,5):
+	num_generations = 20
+	for y in range(0,num_generations):
 		print "ENTERING GENERATION : " + str(y)
 		for x in range(0,len(population)):
 			if x is 0 and y is 0:
 				print "Spinning RouletteWheel..."
-			parents = rw.get_parents(population)
+			parents = get_parents(population,selection)
 			survive = parents[0]
 			survive2 = parents[1]
 			if x is 0 and y is 0:
@@ -60,6 +83,9 @@ def main():
 				print "\nThe selected individuals are going to crossover genes to create a child chromosome that will hopefully adopt the best of both parents and move on to the next generation. The selection algorithm is called single split point selection "
 			child_key = survive.crossover(survive2)
 			child = Chromosome(child_key,-2)
+			child.mutate(1)
+
+			#exit()
 			child.fitness = steg.measure_individual(audio,message_hex,child,baseline_rms,)	
 			if x is 0 and y is 0:
 				print "the child fitness is : " + str(child.fitness) + ", and it is moving on to the next generation. \n" 
@@ -70,12 +96,15 @@ def main():
 			#print "X is:  " + str(x)
 			print "\n\nWe just finished one generation. We kept the best value from our initial population and the best value from our first\n round of genetic combination. Press ENTER to repeat this process for five generations."
 			print ("best values so far: " + str(best_values))
-			get_from_user("")
+			get_from_user("Press Enter to repeat for " + str(num_generations) + " generations")
 		population = list(next_generation)
 		del next_generation[:]
 	
 	print"\n\n Finished " + str(num_generations) +  "." + "Here is a list of the highest fitness values from each generation:"
 	print "BEST VALUES " + str(best_values)
+
+	ordered = result_tuples(best_values)
+	print_analysis(ordered)
 	exit()
 
 	#print population_fitness
@@ -101,6 +130,15 @@ def main():
 	steg.decode_message(edited_audio,key)
 	
 	
+def get_parents(population,selection):
+	if(selection == SELECTION_ROULETTE):
+		rw = RouletteWheel(population)
+		rw.create_wheel(population)
+		return rw.get_parents(population)
+	elif(selection == SELECTION_RANK):
+		rs = RankSelection(population)
+		rs.setup(population,SELECTIVE_PRESSURE)
+		return rs.get_parents(population)	
 def get_from_user(message):
 		filename = raw_input(message)
 		return filename
@@ -122,6 +160,27 @@ def print_pop_fitness(population,best_values,type):
 	print "best individual: \t" + str(lowest) + ": " + str(lowest_value)
 	print "worst individual: \t" + str(highest) + ": " + str(highest_value)
 	best_values.append(str(lowest_value))
-	
+
+def print_results(results):
+	for x in range(len(results)):
+		print "generation " + str(x) + ":\t" + str(results[x])
+
+def result_tuples(results):
+	tuple_list = list()
+	for x in range(len(results)):
+		value = results[x],x
+		tuple_list.append(value)
+		#print "tuple : " + str(value)
+	#tuple_list.sort(key=lambda tup: tup[0])
+	tuple_list.sort()
+	print(str(tuple_list))
+	return tuple_list
+
+def print_analysis(results):
+	print "** Analysis of Results **"
+	print "The list of generations from worse to best."
+	for x in range(0,len(results)):
+		generation = results[x]
+		print "Generation " + str(generation[1]) + ":\t" + str(generation[0])
 
 main()
