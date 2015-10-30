@@ -16,16 +16,25 @@ SELECTION_RANK = "rank"
 SELECTIVE_PRESSURE = 2.0
 MUTATION_FREQ = 0
 ELITISM = 0
-def main():
-	
-
+def main():	
 	selection = "rank"
-
-
 	fname = "ocarina.wav"
 	print "The file to encode is : \t" + fname 
 	#get_from_user("enter a filename: ")
 	steg = stegolib()
+	config = steg.load_key("setup.conf")
+	user_config =read_config(config)
+	user_selection = user_config[0]
+	user_pressure = user_config[1]
+	user_mutation_freq = user_config[2]
+	user_elitism = user_config[3]
+
+
+
+	get_from_user("\nPress OK to continue.")
+	
+
+	
 	af = steg.open_audio_file(fname)
 	parameters = steg.get_audio_information(af)
 	#message = "abc"
@@ -46,8 +55,14 @@ def main():
 	population = steg.init_population(audio,20,message_hex)
 	population_fitness = steg.measure_population(audio,message_hex,population,baseline_rms)
 	best_values = list()
+	strongest_chromosomes = list()
 	print_pop_fitness(population,best_values,"individual")
 	get_from_user("\npress enter to continue")
+	#best = handle_elitism(population,user_elitism)
+
+	#print "\n BEST"
+	#for x in range (0,len(best)):
+	#	print str(best[x].fitness)
 	
 
 	###################################
@@ -70,10 +85,15 @@ def main():
 	num_generations = 20
 	for y in range(0,num_generations):
 		print "ENTERING GENERATION : " + str(y)
-		for x in range(0,len(population)):
+		next_generation = handle_elitism(population,user_elitism,next_generation,user_mutation_freq,baseline_rms,steg,audio,message_hex)
+		print "len " + str(len(next_generation))
+		for x in range(0,len(next_generation)):
+			print(next_generation[x].fitness)
+		
+		for x in range(0,len(population) - user_elitism):
 			if x is 0 and y is 0:
 				print "Spinning RouletteWheel..."
-			parents = get_parents(population,selection)
+			parents = get_parents(population,user_selection,user_pressure)
 			survive = parents[0]
 			survive2 = parents[1]
 			if x is 0 and y is 0:
@@ -83,7 +103,7 @@ def main():
 				print "\nThe selected individuals are going to crossover genes to create a child chromosome that will hopefully adopt the best of both parents and move on to the next generation. The selection algorithm is called single split point selection "
 			child_key = survive.crossover(survive2)
 			child = Chromosome(child_key,-2)
-			child.mutate(1)
+			child.mutate(user_mutation_freq)
 
 			#exit()
 			child.fitness = steg.measure_individual(audio,message_hex,child,baseline_rms,)	
@@ -105,14 +125,14 @@ def main():
 
 	ordered = result_tuples(best_values)
 	print_analysis(ordered)
+	
 	exit()
-
 	#print population_fitness
 	
 	
 
 
-	edited_info = steg.encode(audio,message_hex,population[0].key)	# inserts random hex values between 0 < x < 4							
+	edited_info = steg.encode(audio,message_hex,best_values[0].key)	# inserts random hex values between 0 < x < 4							
 	edited_audio = edited_info[0]
 	key = edited_info[1]
 	edited_rms = steg.compute_rms_power(edited_audio,"rms power after adding noise")		# computes the rms power of the edited file
@@ -129,20 +149,54 @@ def main():
 	key = steg.load_key(keyname)
 	steg.decode_message(edited_audio,key)
 	
+
+def read_config(config):
 	
-def get_parents(population,selection):
+	print "opening + reading setup.config...."
+	for x in range(0,len(config),2):
+		print str(config[x]) + "\t" + str(config[x+1])
+		user_selection = config[1]
+		user_pressure = config[3]
+		user_mutation_freq = config[5]
+		user_elitism = config[7]
+	return (user_selection,user_pressure,user_mutation_freq,user_elitism)
+	
+def get_parents(population,selection,user_pressure):
 	if(selection == SELECTION_ROULETTE):
 		rw = RouletteWheel(population)
 		rw.create_wheel(population)
 		return rw.get_parents(population)
 	elif(selection == SELECTION_RANK):
 		rs = RankSelection(population)
-		rs.setup(population,SELECTIVE_PRESSURE)
+		rs.setup(population,user_pressure)
 		return rs.get_parents(population)	
 def get_from_user(message):
 		filename = raw_input(message)
 		return filename
 
+def handle_elitism(population,user_elitism,next_generation,user_mutation_freq,baseline_rms,steg,audio,message_hex):
+	ordered_list = sorted(population, key=lambda x: x.fitness, reverse=True)
+	for x in range(0,len(population)):
+		print(ordered_list[x].fitness)
+	best = list()
+	for x in range(0,user_elitism):
+		best.append(ordered_list[x])
+	N = len(best)	
+	next_gen = list()
+	for x in range(0,N):
+			parent_one = random.randint(0,N-1)
+			parent_two = -1
+			while parent_two != parent_one:
+				parent_two = random.randint(0,N-1)
+				print "parent 1 " + str(parent_one)
+				print "parent 2 " + str(parent_two)
+			child_key = best[parent_one].crossover(best[parent_two])
+			child = Chromosome(child_key,-2)
+			child.mutate(user_mutation_freq)
+			child.fitness = steg.measure_individual(audio,message_hex,child,baseline_rms,)
+			print "child " + str(child.fitness)
+			next_gen.append(child)
+	return next_gen
 def print_pop_fitness(population,best_values,type):
 	lowest = 0
 	lowest_value = population[0].fitness
