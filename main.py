@@ -58,6 +58,7 @@ def main():
 	best_values = list()
 	strongest_chromosomes = list()
 	print_pop_fitness(population,best_values,"individual")
+	ScatterPlot.plot(best_values)
 	get_from_user("\npress enter to continue")
 	#best = handle_elitism(population,user_elitism)
 
@@ -120,14 +121,17 @@ def main():
 			get_from_user("Press Enter to repeat for " + str(num_generations) + " generations")
 		population = list(next_generation)
 		del next_generation[:]
+		if y is 4 or y is 9 or y is 14:
+			ScatterPlot.plot(best_values)
+
 	
 	print"\n\n Finished " + str(num_generations) +  "." + "Here is a list of the highest fitness values from each generation:"
 	print "BEST VALUES " + str(best_values)
 
 	ordered = result_tuples(best_values)
 	print_analysis(ordered)
-	
 	ScatterPlot.plot(best_values)
+
 	exit()
 	#print population_fitness
 	
