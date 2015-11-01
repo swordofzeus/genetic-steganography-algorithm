@@ -10,6 +10,7 @@ from stegolib import stegolib
 from RouletteWheel import RouletteWheel
 from RankSelection import RankSelection
 from Chromosome import Chromosome as Chromosome
+import ScatterPlot
 
 SELECTION_ROULETTE = "roulette"
 SELECTION_RANK = "rank"
@@ -126,6 +127,7 @@ def main():
 	ordered = result_tuples(best_values)
 	print_analysis(ordered)
 	
+	ScatterPlot.plot(best_values)
 	exit()
 	#print population_fitness
 	
