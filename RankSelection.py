@@ -52,8 +52,8 @@ class RankSelection:
 	
 	#################################################################	
 	def get_parents(self,population):
-		print "selecting parent one :\n"
+		print "Selecting parent one :\n"
 		parent_one = self.select_individual(population)
-		print "\nselecting parent two: \n"
+		print "\nSelecting parent two: \n"
 		parent_two = self.select_mate(population,parent_one)
 		return parent_one,parent_two

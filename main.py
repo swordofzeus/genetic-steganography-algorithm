@@ -32,7 +32,7 @@ def main():
 
 
 
-	get_from_user("\nPress OK to continue.")
+	get_from_user("\nPress enter to continue.")
 	
 
 	
@@ -41,25 +41,25 @@ def main():
 	#message = "abc"
 	#message = "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to Heaven, we were all going direct the other way – in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only. "
 	message = "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to Heaven, we were all going direct the other way – in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only."
-	print "encoding message :\n " + message
+	print "Encoding message :\n" + message
 	print "\n"
 	message = message + message + message + message + message
 	message_hex = binascii.hexlify(message)
 	#The GA maintains a population of n chromosomes (solutions) with associated fitness values. Parents are selected to mate, on the basis of their fitness, producing offspring via a reproductive plan. Consequently highly fit solutions are given more opportunities to 
 	audio = steg.as_hex(af)
-	baseline_rms = steg.compute_rms_power(audio,"rms power before added noise : ")
+	baseline_rms = steg.compute_rms_power(audio,"RMS power before added noise : ")
 	num_individuals = 20
 	print "Step 1) The first step of a genetic algorithm is to initialize a random population. The initial randomness creates genetic variation which is the basis for our search heuristic. \nWe measure the fitness function of each member of our population and use that as a metric for selecting the best individuals whose genes move to the next generation "
 	
-	get_from_user("Press Enter to initialize a population")
-	print "initializing random population of " + str(num_individuals) + " individuals... \n"
+	get_from_user("Press enter to initialize a population")
+	print "Initializing random population of " + str(num_individuals) + " individuals... \n"
 	population = steg.init_population(audio,20,message_hex)
 	population_fitness = steg.measure_population(audio,message_hex,population,baseline_rms)
 	best_values = list()
 	strongest_chromosomes = list()
 	print_pop_fitness(population,best_values,"individual")
 	ScatterPlot.plot(best_values)
-	get_from_user("\npress enter to continue")
+	get_from_user("\nPress enter to continue")
 	#best = handle_elitism(population,user_elitism)
 
 	#print "\n BEST"
@@ -82,7 +82,7 @@ def main():
 	next_generation = list()
 	print "Step 2 : Initialize new generation"
 	print "The most fit individuals are selected using the RouletteWheel model to produce children. The fittest individuals cross genes in hopes that after multiple iterations future generations will \nbegin to converge towards an optimal or near optimal value."
-	get_from_user("\n press enter to continue")
+	get_from_user("\nPress enter to continue")
 	
 	num_generations = 20
 	for y in range(0,num_generations):
@@ -99,9 +99,9 @@ def main():
 			survive = parents[0]
 			survive2 = parents[1]
 			if x is 0 and y is 0:
-				print "\nparents selected:"
-				print "parent one fitness: " + str(survive.fitness)
-				print "parent two fitness: " + str(survive2.fitness)	
+				print "\nParents selected:"
+				print "Parent one fitness: " + str(survive.fitness)
+				print "Parent two fitness: " + str(survive2.fitness)	
 				print "\nThe selected individuals are going to crossover genes to create a child chromosome that will hopefully adopt the best of both parents and move on to the next generation. The selection algorithm is called single split point selection "
 			child_key = survive.crossover(survive2)
 			child = Chromosome(child_key,-2)
@@ -116,8 +116,8 @@ def main():
 		print_pop_fitness(next_generation,best_values,"child")
 		if y is 0:
 			#print "X is:  " + str(x)
-			print "\n\nWe just finished one generation. We kept the best value from our initial population and the best value from our first\n round of genetic combination. Press ENTER to repeat this process for five generations."
-			print ("best values so far: " + str(best_values))
+			print "\n\nWe just finished one generation. We kept the best value from our initial population and the best value from our first\n round of genetic combination."
+			print ("Best values so far: " + str(best_values))
 			get_from_user("Press Enter to repeat for " + str(num_generations) + " generations")
 		population = list(next_generation)
 		del next_generation[:]
@@ -125,7 +125,7 @@ def main():
 			ScatterPlot.plot(best_values)
 
 	
-	print"\n\n Finished " + str(num_generations) +  "." + "Here is a list of the highest fitness values from each generation:"
+	print"\n\nFinished " + str(num_generations) +  "." + "Here is a list of the highest fitness values from each generation:"
 	print "BEST VALUES " + str(best_values)
 
 	ordered = result_tuples(best_values)
@@ -147,18 +147,18 @@ def main():
 	snr = steg.compute_fitness_function(baseline_rms,edited_rms)
 
 
-	print ("the signal to noise ratio is: " , snr)
-	print "the noise file has been saved as " + noise_fname 
-	saved_keyname = get_from_user("audio hidden in " + fname  + "\nenter name for your stego key:")
+	print ("The signal to noise ratio is: " , snr)
+	print "The noise file has been saved as " + noise_fname 
+	saved_keyname = get_from_user("Audio hidden in " + fname  + "\nEnter name for your stego key:")
 	steg.save_key(key,saved_keyname)
-	keyname = get_from_user("enter a .key to decode the text from the audio file: ")
+	keyname = get_from_user("Enter a .key to decode the text from the audio file: ")
 	key = steg.load_key(keyname)
 	steg.decode_message(edited_audio,key)
 	
 
 def read_config(config):
 	
-	print "opening + reading setup.config...."
+	print "Opening & reading setup.config...."
 	for x in range(0,len(config),2):
 		print str(config[x]) + "\t" + str(config[x+1])
 		user_selection = config[1]
@@ -194,13 +194,13 @@ def handle_elitism(population,user_elitism,next_generation,user_mutation_freq,ba
 			parent_two = -1
 			while parent_two != parent_one:
 				parent_two = random.randint(0,N-1)
-				print "parent 1 " + str(parent_one)
-				print "parent 2 " + str(parent_two)
+				print "Parent 1 " + str(parent_one)
+				print "Parent 2 " + str(parent_two)
 			child_key = best[parent_one].crossover(best[parent_two])
 			child = Chromosome(child_key,-2)
 			child.mutate(user_mutation_freq)
 			child.fitness = steg.measure_individual(audio,message_hex,child,baseline_rms,)
-			print "child " + str(child.fitness)
+			print "Child " + str(child.fitness)
 			next_gen.append(child)
 	return next_gen
 def print_pop_fitness(population,best_values,type):
@@ -215,15 +215,15 @@ def print_pop_fitness(population,best_values,type):
 		if(population[x].fitness > highest_value):
 			highest = x
 			highest_value = population[highest].fitness
-		print "individual " + type + " # " + str(x) + " fitness : \t " + str(population[x].fitness)
+		print "Individual " + type + " # " + str(x) + " Fitness : \t " + str(population[x].fitness)
 		#print "individial " + str(x) + ":\t" + str(population[x].fitness)
-	print "best individual: \t" + str(lowest) + ": " + str(lowest_value)
-	print "worst individual: \t" + str(highest) + ": " + str(highest_value)
-	best_values.append(str(lowest_value))
+	print "Worst individual: \t" + str(lowest) + ": " + str(lowest_value)
+	print "Best individual: \t" + str(highest) + ": " + str(highest_value)
+	best_values.append(str(highest_value))
 
 def print_results(results):
 	for x in range(len(results)):
-		print "generation " + str(x) + ":\t" + str(results[x])
+		print "Generation " + str(x) + ":\t" + str(results[x])
 
 def result_tuples(results):
 	tuple_list = list()

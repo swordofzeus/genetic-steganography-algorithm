@@ -27,8 +27,8 @@ class stegolib:
 	def save_key(self,key,fname):
 		with open(fname + ".key", 'w') as f:
 	  		json.dump(key, f, ensure_ascii=False)
-	  		print "\nthe file " + fname + ".key" + " has been saved.\n"
-	  		print "this file will help you recover your text" 
+	  		print "\nThe file " + fname + ".key" + " has been saved.\n"
+	  		print "This file will help you recover your text" 
 
 	#loads a file containing the stego key into a list structure 		
 	def load_key(self,fname):
@@ -76,19 +76,19 @@ class stegolib:
 	#returns a string of bytes representing the audio file
 	def open_audio_file(self,fname):
 	        audio_file = wave.open(fname,'rb')
-	        print("audio file opened....OK.\n")
+	        print("Audio file opened....OK.\n")
 		return audio_file
 
 	#writes information about the audio to console
 	def get_audio_information(self,af):
 		parameters = af.getparams()
-		print "number of channels : " , parameters[0]
-		print "sampwidth : " , parameters[1]
-		print "framerate " , parameters[2]
-		print "number of frames " , parameters[3]
-		print "compression type" , parameters[4]
-		print "compression name " , parameters[5]
-		print("reading information....OK.\n")
+		print "Number of channels : " , parameters[0]
+		print "Sampwidth : " , parameters[1]
+		print "Framerate " , parameters[2]
+		print "Number of frames " , parameters[3]
+		print "Compression type" , parameters[4]
+		print "Compression name " , parameters[5]
+		print("Reading information....OK.\n")
 		return parameters
 
 	#returns the hex representation of a string of audio bytes

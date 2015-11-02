@@ -10,7 +10,7 @@ def main():
 	parameters = get_audio_information(af)	# displays audio information
 	audio = load_into_memory(af)			# copies the byte string into hex format
 	baseline_rms = compute_rms_power(audio,"rms power before added noise : ")	# computes the rms power to the unedited file
-	print "adding noise to file : " + fname
+	print "Adding noise to file : " + fname
 	
 
 	fname2 = get_file_from_user()
@@ -21,7 +21,7 @@ def main():
 	edited_rms = compute_rms_power(audio2,"rms with noise")		# computes the rms power of the edited file												
 	#write_wave_file(noise_fname,edited_audio,parameters)	# writes a copy of the edited file to disk
 	snr = compute_fitness_function(baseline_rms,edited_rms)	# computes the signal to noise ratio, measuring the ratio of important information to junk/noise
-	print ("the signal to noise ratio is: " , snr)
+	print ("The signal to noise ratio is: " , snr)
 	#print "the noise file has been saved as " + noise_fname 
 def get_file_from_user():
 	filename = raw_input('Enter a file name: ')
@@ -55,17 +55,17 @@ def load_segment(af,epoch,frame_ration):
 	num_frames = af.getnframes()
 def open_audio_file(fname):
         audio_file = wave.open(fname,'rb')
-        print("audio file opened....OK.\n")
+        print("Audio file opened....OK.\n")
 	return audio_file
 def get_audio_information(af):
 	parameters = af.getparams()
-	print "number of channels : " , parameters[0]
-	print "sampwidth : " , parameters[1]
-	print "framerate " , parameters[2]
-	print "number of frames " , parameters[3]
-	print "compression type" , parameters[4]
-	print "compression name " , parameters[5]
-	print("reading information....OK.\n")
+	print "Number of channels : " , parameters[0]
+	print "Sampwidth : " , parameters[1]
+	print "Framerate " , parameters[2]
+	print "Number of frames " , parameters[3]
+	print "Compression type" , parameters[4]
+	print "Compression name " , parameters[5]
+	print("Reading information....OK.\n")
 	return parameters
 def load_into_memory(af):
 	num_frames = af.getnframes()
