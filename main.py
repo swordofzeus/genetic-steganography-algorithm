@@ -19,7 +19,7 @@ MUTATION_FREQ = 0
 ELITISM = 0
 def main():	
 	selection = "rank"
-	fname = "ocarina.wav"
+	fname = "piano2.wav"
 	print "The file to encode is : \t" + fname 
 	#get_from_user("enter a filename: ")
 	steg = stegolib()

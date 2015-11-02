@@ -17,6 +17,6 @@ def plot(best_values):
     plt.title('Best Values per Generation')
     plt.ylabel('Value')
     plt.xlabel('Generation Number')
-    plt.axis([-5, 25, 0.983, 0.987])
+    plt.axis([-5, 25, 0.95, 0.954])
     
     plt.show()
