@@ -56,8 +56,9 @@ def main():
 	population = steg.init_population(audio,20,message_hex)
 	population_fitness = steg.measure_population(audio,message_hex,population,baseline_rms)
 	best_values = list()
+	best_genes = list()
 	strongest_chromosomes = list()
-	print_pop_fitness(population,best_values,"individual")
+	print_pop_fitness(population,best_values,best_genes,"individual")
 	ScatterPlot.plot(best_values)
 	get_from_user("\nPress enter to continue")
 	#best = handle_elitism(population,user_elitism)
@@ -113,7 +114,7 @@ def main():
 				print "the child fitness is : " + str(child.fitness) + ", and it is moving on to the next generation. \n" 
 				get_from_user("Press enter to run this for all members of the population.")
 			next_generation.append(child)
-		print_pop_fitness(next_generation,best_values,"child")
+		print_pop_fitness(next_generation,best_values,best_genes,"child")
 		if y is 0:
 			#print "X is:  " + str(x)
 			print "\n\nWe just finished one generation. We kept the best value from our initial population and the best value from our first\n round of genetic combination."
@@ -132,13 +133,13 @@ def main():
 	print_analysis(ordered)
 	ScatterPlot.plot(best_values)
 
-	exit()
+	#exit()
 	#print population_fitness
 	
 	
 
-
-	edited_info = steg.encode(audio,message_hex,best_values[0].key)	# inserts random hex values between 0 < x < 4							
+	sorted_genes = sorted(best_genes, key=lambda x: x.fitness, reverse=True)
+	edited_info = steg.encode(audio,message_hex,sorted_genes[0].key)	# inserts random hex values between 0 < x < 4							
 	edited_audio = edited_info[0]
 	key = edited_info[1]
 	edited_rms = steg.compute_rms_power(edited_audio,"rms power after adding noise")		# computes the rms power of the edited file
@@ -203,11 +204,13 @@ def handle_elitism(population,user_elitism,next_generation,user_mutation_freq,ba
 			print "Child " + str(child.fitness)
 			next_gen.append(child)
 	return next_gen
-def print_pop_fitness(population,best_values,type):
+def print_pop_fitness(population,best_values,best_genes,type):
 	lowest = 0
+	highest = 0
+	lowestChromosome = population[0]
 	lowest_value = population[0].fitness
 	highest_value = population[0].fitness
-	highest = 0
+	highestChromosome = population[0]
 	for x in range(0,len(population)):
 		if(population[x].fitness < lowest_value):
 			lowest = x
@@ -220,6 +223,7 @@ def print_pop_fitness(population,best_values,type):
 	print "Worst individual: \t" + str(lowest) + ": " + str(lowest_value)
 	print "Best individual: \t" + str(highest) + ": " + str(highest_value)
 	best_values.append(str(highest_value))
+	best_genes.append(highestChromosome)
 
 def print_results(results):
 	for x in range(len(results)):
