@@ -19,7 +19,7 @@ MUTATION_FREQ = 0
 ELITISM = 0
 def main():	
 	selection = "rank"
-	fname = "piano2.wav"
+	fname = "ocarina.wav"
 	print "The file to encode is : \t" + fname 
 	#get_from_user("enter a filename: ")
 	steg = stegolib()
@@ -59,7 +59,7 @@ def main():
 	best_genes = list()
 	strongest_chromosomes = list()
 	print_pop_fitness(population,best_values,best_genes,"individual")
-	ScatterPlot.plot(best_values)
+	#ScatterPlot.plot(best_values)
 	get_from_user("\nPress enter to continue")
 	#best = handle_elitism(population,user_elitism)
 
@@ -122,8 +122,8 @@ def main():
 			get_from_user("Press Enter to repeat for " + str(num_generations) + " generations")
 		population = list(next_generation)
 		del next_generation[:]
-		if y is 4 or y is 9 or y is 14:
-			ScatterPlot.plot(best_values)
+		#if y is 4 or y is 9 or y is 14:
+		#	ScatterPlot.plot(best_values)
 
 	
 	print"\n\nFinished " + str(num_generations) +  "." + "Here is a list of the highest fitness values from each generation:"
