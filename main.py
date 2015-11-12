@@ -139,7 +139,7 @@ def main():
 	
 
 	sorted_genes = sorted(best_genes, key=lambda x: x.fitness, reverse=True)
-	edited_info = steg.encode(audio,message_hex,sorted_genes[0].key)	# inserts random hex values between 0 < x < 4							
+	edited_info = steg.encode(audio,message_hex,sorted_genes[0].key)							
 	edited_audio = edited_info[0]
 	key = edited_info[1]
 	edited_rms = steg.compute_rms_power(edited_audio,"rms power after adding noise")		# computes the rms power of the edited file

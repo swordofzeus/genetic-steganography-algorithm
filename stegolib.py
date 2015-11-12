@@ -25,7 +25,7 @@ class stegolib:
 	#the list should be full of integers representing 
 	#the various indicies where the message has been hidden
 	def save_key(self,key,fname):
-		with open(fname + ".key", 'w') as f:
+		with open(fname, 'w') as f:
 	  		json.dump(key, f, ensure_ascii=False)
 	  		print "\nThe file " + fname + ".key" + " has been saved.\n"
 	  		print "This file will help you recover your text" 
